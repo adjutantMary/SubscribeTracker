@@ -155,3 +155,16 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'Документация к сервису подписок',
     'VERSION': '1.0.0',
 }
+
+LOGGING = {
+    'version': 1,
+    'handlers': {
+        'console': {'class': 'logging.StreamHandler'},
+    },
+    'loggers': {
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    }
+}
