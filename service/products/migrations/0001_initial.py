@@ -7,21 +7,40 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Order',
+            name="Order",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('status', models.CharField(choices=[('NEW', 'Новый'), ('IN_PROGRESS', 'В обработке'), ('DONE', 'Выполнен'), ('CANCELED', 'Отменен')], default='NEW', max_length=20)),
-                ('description', models.TextField()),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("NEW", "Новый"),
+                            ("IN_PROGRESS", "В обработке"),
+                            ("DONE", "Выполнен"),
+                            ("CANCELED", "Отменен"),
+                        ],
+                        default="NEW",
+                        max_length=20,
+                    ),
+                ),
+                ("description", models.TextField()),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
             ],
             options={
-                'verbose_name': 'Заказ',
-                'verbose_name_plural': 'Заказы',
+                "verbose_name": "Заказ",
+                "verbose_name_plural": "Заказы",
             },
         ),
     ]
