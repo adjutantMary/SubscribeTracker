@@ -1,5 +1,5 @@
 from django.db import models
-from ..subscriptions.models import CustomUser
+from subscriptions.models import CustomUser
 
 
 class Order(models.Model):

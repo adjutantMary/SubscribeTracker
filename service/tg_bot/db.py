@@ -12,5 +12,5 @@ class User(Base):
     phone = Column(String, unique=True)
     telegram_id = Column(BigInteger)
 
-DB_URL = os.getenv("DB_URL")  # Пример: "postgresql://postgres:postgres@db:5432/postgres"
+DB_URL = os.getenv("DB_URL")
 engine = create_engine(DB_URL)
