@@ -1,65 +1,44 @@
+version: '3.8'
+
 services:
-  web-app:
-    build: 
+  web:
+    build:
       context: .
+      dockerfile: Dockerfile
+    command: gunicorn app.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - ./service:/app
     ports:
-      - "8080:8000"
-    volumes:
-      - ./service:/service
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - db
 
+  bot:
+    build:
+      context: ./bot
+    command: bash -c "sleep 10 && python bot.py"
+    working_dir: /bot
+    volumes:
+      - ./bot:/bot
+    env_file:
+      - .env
     environment:
-      - DB_HOST=database
-      - DB_NAME=service
-      - DB_USER=dbuser
-      - DB_PASS=pass
-    
-    command: >
-      sh -c "python manage.py runserver 127.0.0.1:8080"
-
+      - DB_URL=postgresql://postgres:postgres@db:5432/subscribe_tracker
     depends_on:
-      - database
-  
-  database:
-    image: postgres:14.6-alpine
-    environment: 
-      - POSTGRES_DB=dbname
-      - POSTGRES_USER=dbuser
-      - POSTGRES_PASSWORD=pass
+      - db
 
-  redis:
-    image: redis:7.0.5-alpine
-    hostname: redis
-  
-  worker:
-    build: 
-      context: 
-    hostname: worker
-    entrypoint: celery
-    command: -A celery_app.app worker --loglevel=info
-    volumes:
-      - ./service:/service
-    links:
-      - redis
-    depends_on:
-      - redis
-      - database
+  db:
+    image: postgres:15
     environment:
-      - DB_HOST=database
-      - DB_NAME=dbname
-      - DB_USER=dbuser
-      - DB_PASS=pass
-  
-  flower:
-    build: 
-      context:
-    hostname: flower
-    entrypoint: celery
-    command: -A celery_app.app flower
+      POSTGRES_DB: subscribe_tracker
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     volumes:
-      - ./service:/service
-    links:
-      - redis
-    depends_on:
-      - redis
+      - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5555:5555"
+      - "5432:5432"
+
+volumes:
+  postgres_data:

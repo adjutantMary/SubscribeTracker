@@ -4,13 +4,15 @@ import os
 
 Base = declarative_base()
 
+
 class User(Base):
-    __tablename__ = 'users_customuser'
+    __tablename__ = "users_customuser"
 
     id = Column(Integer, primary_key=True)
     username = Column(String)
     phone = Column(String, unique=True)
     telegram_id = Column(BigInteger)
 
-DB_URL = os.getenv("DB_URL")  # Пример: "postgresql://postgres:postgres@db:5432/postgres"
+
+DB_URL = os.getenv("DB_URL")
 engine = create_engine(DB_URL)
