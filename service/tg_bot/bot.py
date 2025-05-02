@@ -12,21 +12,18 @@ from sqlalchemy import select
 from db import engine, User
 from dotenv import load_dotenv
 
-# Загрузка переменных окружения
 load_dotenv()
 
-# Настройка логирования
 logging.basicConfig(level=logging.INFO)
 
-# Создание сессии SQLAlchemy
 SessionLocal = sessionmaker(bind=engine)
 
-# Инициализация бота и диспетчера
 bot = Bot(
     token=os.getenv("TG_BOT_TOKEN"),
-    default=DefaultBotProperties(parse_mode=ParseMode.HTML)
+    default=DefaultBotProperties(parse_mode=ParseMode.HTML),
 )
 dp = Dispatcher()
+
 
 # Хендлер команды /start
 @dp.message(F.text == "/start")
@@ -37,6 +34,7 @@ async def cmd_start(message: Message):
         one_time_keyboard=True,
     )
     await message.answer("Пожалуйста, отправьте свой номер телефона:", reply_markup=kb)
+
 
 # Хендлер контакта
 @dp.message(F.contact)
@@ -60,9 +58,11 @@ async def handle_contact(message: Message):
 
     await message.answer("✅ Вы успешно зарегистрированы!", reply_markup=None)
 
+
 # Запуск бота
 async def main():
     await dp.start_polling(bot)
+
 
 if __name__ == "__main__":
     asyncio.run(main())

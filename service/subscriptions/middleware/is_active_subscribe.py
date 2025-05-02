@@ -1,19 +1,33 @@
+import json
+from django.http import JsonResponse
 from django.utils.deprecation import MiddlewareMixin
 from django.urls import resolve
-from subscriptions.models import UserSubscription
-from datetime import date
-from django.http import JsonResponse
+from subscriptions.models import UserSubscription, CustomUser  # или User, если иначе
+from django.views.decorators.csrf import csrf_exempt
 
 
 class ActiveSubscriptionMiddleware(MiddlewareMixin):
     def process_view(self, request, view_func, view_args, view_kwargs):
-        path = resolve(request.path_info).route
-        if not path.startswith("orders/"):
+        if not request.path.startswith("/api/orders/") or request.method != "POST":
             return None
         try:
-            subscription = UserSubscription.objects.get(
-                user=request.user, is_active=True
-            )
-            return None
-        except UserSubscription.DoesNotExist:
+            data = json.loads(request.body)
+            user_id = data.get("user_id")
+        except Exception as e:
+            print("[middleware] Ошибка чтения body:", e)
+            return JsonResponse({"detail": "Неверный формат запроса"}, status=400)
+
+        if not user_id:
+            return JsonResponse({"detail": "user_id не передан"}, status=400)
+
+        try:
+            user = CustomUser.objects.get(id=user_id)
+        except CustomUser.DoesNotExist:
+            return JsonResponse({"detail": "Пользователь не найден"}, status=404)
+
+        has_active = UserSubscription.objects.filter(user=user, is_active=True).exists()
+        if not has_active:
+            print("[middleware] Подписка отсутствует")
             return JsonResponse({"detail": "Нет активной подписки"}, status=403)
+
+        return None

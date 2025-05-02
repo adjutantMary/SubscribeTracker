@@ -1,4 +1,3 @@
-
 from pathlib import Path
 import os
 
@@ -11,7 +10,7 @@ SECRET_KEY = "django-insecure-t^xs3*8bruhzm69a6^o&b69(a3ot@sph^gqw99^)2j8n@@xjz8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*"]
 
 CUSTOM_APPS = [
     "subscriptions",
