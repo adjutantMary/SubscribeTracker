@@ -77,29 +77,3 @@ class UserSubscriptionView(APIView):
         subscription.is_active = False
         subscription.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-@api_view(["GET"])
-def get_tariffs_list(request):
-    tariffs = Tariff.objects.all()
-    serializer = TariffSerializer(tariffs, many=True)
-    return Response(serializer.data)
-
-
-@api_view(["GET"])
-def get_user_subscriptions(request):
-    subscriptions = UserSubscription.objects.all()
-    serializer = UserSubscriptionSerializer(subscriptions, many=True)
-    return Response(serializer.data)
-
-
-@api_view(["POST"])
-def create_user_subscription(request):
-    serializer = UserSubscriptionSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=201)
-    return Response(serializer.errors, status=400)
-
-
-# Create your views here.

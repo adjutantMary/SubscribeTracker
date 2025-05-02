@@ -17,11 +17,11 @@ services:
 
   bot:
     build:
-      context: ./bot
-    command: bash -c "sleep 10 && python bot.py"
-    working_dir: /bot
+      context: .
+    command: sh -c "python manage.py runserver 0.0.0.0:8000"
+    working_dir: /tg_bot
     volumes:
-      - ./bot:/bot
+      - ./service:/tg_bot
     env_file:
       - .env
     environment:

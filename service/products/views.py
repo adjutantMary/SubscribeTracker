@@ -5,14 +5,15 @@ from rest_framework import status, permissions
 from .models import Order
 from .serializers import OrderSerializer
 from django.conf import settings
-
+import os
+from dotenv import load_dotenv
 import requests
 
 
 class OrderListCreateView(APIView):
     """Роуты для работы с заказами"""
 
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.AllowAny,)
 
     def get(self, request):
         """Получаем все заказы"""
@@ -25,9 +26,12 @@ class OrderListCreateView(APIView):
         serializer = OrderSerializer(data=request.data, context={"request": request})
         if serializer.is_valid():
             order = serializer.save()
-            user = request.user
+            user = order.user
+
             if user.telegram_id:
+                print(f"Отправка в Telegram ID: {user.telegram_id}")
                 send_telegram_message(user.telegram_id, "Вам пришёл новый заказ!")
+                print("функция вызвалась")
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -81,11 +85,19 @@ class OrderDetailView(APIView):
 
 
 def send_telegram_message(telegram_id, text):
-    """Утилита для отправки месседжа"""
-    token = settings.TG_BOT_TOKEN
+    
+    """Утилита для отправки уведомления в telegram"""
+    
+    token = os.getenv("TG_BOT_TOKEN")
     url = f"https://api.telegram.org/bot{token}/sendMessage"
     payload = {"chat_id": telegram_id, "text": text}
+    print(f"[Telegram] Отправка: {payload}")
+    print(f"[Telegram] URL: {url}")
+
     try:
-        requests.post(url, json=payload, timeout=3)
-    except requests.RequestException as e:
-        print(f"Ошибка отправки Telegram-сообщения: {e}")
+        response = requests.post(url, json=payload, timeout=5)
+        print(f"[Telegram] Ответ: {response.status_code} {response.text}")
+        response.raise_for_status()
+    except Exception as e:
+        print(f"[Telegram] Ошибка отправки: {e}")
+        raise

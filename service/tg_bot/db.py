@@ -6,7 +6,7 @@ Base = declarative_base()
 
 
 class User(Base):
-    __tablename__ = "users_customuser"
+    __tablename__ = "subscriptions_customuser"
 
     id = Column(Integer, primary_key=True)
     username = Column(String)
