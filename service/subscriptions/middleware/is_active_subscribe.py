@@ -1,9 +1,7 @@
 import json
 from django.http import JsonResponse
 from django.utils.deprecation import MiddlewareMixin
-from django.urls import resolve
-from subscriptions.models import UserSubscription, CustomUser  # или User, если иначе
-from django.views.decorators.csrf import csrf_exempt
+from subscriptions.models import UserSubscription, CustomUser
 
 
 class ActiveSubscriptionMiddleware(MiddlewareMixin):

@@ -24,8 +24,6 @@ bot = Bot(
 )
 dp = Dispatcher()
 
-
-# Хендлер команды /start
 @dp.message(F.text == "/start")
 async def cmd_start(message: Message):
     kb = ReplyKeyboardMarkup(
@@ -35,8 +33,6 @@ async def cmd_start(message: Message):
     )
     await message.answer("Пожалуйста, отправьте свой номер телефона:", reply_markup=kb)
 
-
-# Хендлер контакта
 @dp.message(F.contact)
 async def handle_contact(message: Message):
     session = SessionLocal()
@@ -58,8 +54,6 @@ async def handle_contact(message: Message):
 
     await message.answer("✅ Вы успешно зарегистрированы!", reply_markup=None)
 
-
-# Запуск бота
 async def main():
     await dp.start_polling(bot)
 

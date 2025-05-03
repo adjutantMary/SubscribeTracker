@@ -85,9 +85,8 @@ class OrderDetailView(APIView):
 
 
 def send_telegram_message(telegram_id, text):
-    
     """Утилита для отправки уведомления в telegram"""
-    
+
     token = os.getenv("TG_BOT_TOKEN")
     url = f"https://api.telegram.org/bot{token}/sendMessage"
     payload = {"chat_id": telegram_id, "text": text}
