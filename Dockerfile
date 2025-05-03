@@ -1,15 +1,13 @@
+FROM python:3.13-alpine
 
-FROM python:3.11-slim
 
+# Копируем зависимости
 WORKDIR /app
 
-COPY service/requirements.txt .
+COPY ./requirements.txt /temp/requirements.txt
+RUN pip install --no-cache-dir -r /temp/requirements.txt
 
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY service/ .
+COPY . /app
 
 EXPOSE 8000
-
-
-CMD ["gunicorn", "app.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["bash"]
